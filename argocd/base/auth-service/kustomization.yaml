@@ -3,5 +3,5 @@ resources:
   - service.yaml
 
 images:
-  - name: youracr.azurecr.io/auth-service
+  - name: stagingacr1234.azurecr.io/auth-service
     newTag: "1"

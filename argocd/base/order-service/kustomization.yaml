@@ -3,5 +3,5 @@ resources:
   - service.yaml
 
 images:
-  - name: youracr.azurecr.io/order-service
+  - name: stagingacr1234.azurecr.io/order-service
     newTag: "1"

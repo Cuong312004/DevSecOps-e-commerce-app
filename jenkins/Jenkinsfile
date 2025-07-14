@@ -1,0 +1,56 @@
+pipeline {
+  agent any
+  parameters {
+    choice(name: 'SERVICE', choices: ['auth-service', 'product-service', 'order-service', 'frontend'], description: 'Service to build')
+  }
+  environment {
+    REGISTRY = "youracr.azurecr.io"
+    IMAGE_TAG = "${BUILD_NUMBER}"
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/your-org/code-repo.git'
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        dir("backend/${params.SERVICE}") {
+          sh "docker build -t ${REGISTRY}/${params.SERVICE}:${IMAGE_TAG} ."
+        }
+      }
+    }
+
+    stage('Scan (Trivy + SonarQube)') {
+      steps {
+        sh "trivy image ${REGISTRY}/${params.SERVICE}:${IMAGE_TAG} || true"
+        // SonarQube scan optional
+      }
+    }
+
+    stage('Push Image') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'acr-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+          sh """
+            echo $PASS | docker login ${REGISTRY} -u $USER --password-stdin
+            docker push ${REGISTRY}/${params.SERVICE}:${IMAGE_TAG}
+          """
+        }
+      }
+    }
+
+    stage('Update ArgoCD Manifest') {
+      steps {
+        script {
+          def file = "argocd/base/${params.SERVICE}/kustomization.yaml"
+          sh "sed -i 's|newTag:.*|newTag: ${IMAGE_TAG}|' ${file}"
+          sh "git config user.name 'jenkins'"
+          sh "git config user.email 'jenkins@ci'"
+          sh "git commit -am 'Update image tag for ${params.SERVICE}'"
+          sh "git push"
+        }
+      }
+    }
+  }
+}

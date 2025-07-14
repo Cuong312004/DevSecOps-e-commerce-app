@@ -1,0 +1,7 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+
+images:
+  - name: youracr.azurecr.io/frontend
+    newTag: 1

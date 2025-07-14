@@ -60,9 +60,10 @@ resource "azurerm_linux_virtual_machine" "jenkins_vm" {
   location              = var.location
   resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.jenkins_nic.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_B2s"
   admin_username        = var.admin_username
-  disable_password_authentication = true
+  admin_password        = var.admin_password
+  disable_password_authentication = false
 
   os_disk {
     caching              = "ReadWrite"
@@ -103,10 +104,17 @@ resource "azurerm_linux_virtual_machine" "jenkins_vm" {
       "sudo apt-get update -y",
       "sudo apt-get install -y jenkins",
 
+      "sudo apt update",
+      "sudo apt install -y docker.io",
+      "sudo systemctl enable docker",
+      "sudo systemctl start docker",
+      "sudo usermod -aG docker jenkins",
+      "sudo systemctl restart jenkins",
       "sudo systemctl daemon-reexec",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable jenkins",
       "sudo systemctl start jenkins"
+
     ]
 
 

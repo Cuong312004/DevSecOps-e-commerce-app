@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/your-org/devops.git
+    repoURL: https://github.com/Cuong312004/DevSecOps-e-commerce-app.git
     targetRevision: HEAD
     path: argocd/base/frontend
   destination:

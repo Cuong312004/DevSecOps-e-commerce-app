@@ -4,4 +4,4 @@ resources:
 
 images:
   - name: youracr.azurecr.io/frontend
-    newTag: 1
+    newTag: "1"

@@ -4,4 +4,4 @@ resources:
 
 images:
   - name: youracr.azurecr.io/auth-service
-    newTag: 1
+    newTag: "1"

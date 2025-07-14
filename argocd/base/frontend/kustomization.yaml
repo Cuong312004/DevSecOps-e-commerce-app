@@ -1,7 +1,8 @@
 resources:
   - deployment.yaml
   - service.yaml
-
+  - ingress.yaml
+  
 images:
   - name: stagingacr1234.azurecr.io/frontend
     newTag: "1"

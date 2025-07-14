@@ -77,3 +77,13 @@ module "argocd" {
   source    = "../../modules/argocd"
   namespace = "argocd"
 }
+
+module "nginx_ingress" {
+  source    = "../../modules/nginx_ingress"
+  name      = "ingress-nginx"
+  namespace = "ingress-nginx"
+  chart_version = "4.10.1"
+
+  depends_on = [module.aks]
+}
+

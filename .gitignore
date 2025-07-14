@@ -1,0 +1,70 @@
+# ============================
+# 📁 General
+# ============================
+*.log
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+*.lock
+
+# ============================
+# 📁 Terraform
+# ============================
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars.json
+
+# Local environment
+.terraform.lock.hcl
+.env
+
+# ============================
+# 📁 Jenkins / CI
+# ============================
+jenkins/credentials.json
+jenkins/secrets/*
+*.jenkins*
+*.hpi
+*.jpi
+.idea/
+.vscode/
+
+# ============================
+# 📁 ArgoCD
+# ============================
+argocd/secrets/
+secrets/
+*.enc.yaml
+
+# ============================
+# 📁 Reports & Scan Results
+# ============================
+reports/
+*.json
+*.xml
+*.html
+*.sarif
+
+# Trivy cache
+.trivy/
+
+# Checkov cache
+.checkov/
+
+# SonarQube
+.sonar/
+.scannerwork/
+
+# ============================
+# 📁 ssh_key
+# ============================
+
+ssh_key

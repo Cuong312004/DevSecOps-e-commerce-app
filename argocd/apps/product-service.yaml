@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/Cuong312004/DevSecOps-e-commerce-app.git
     targetRevision: HEAD
-    path: argocd/base/auth-service
+    path: argocd/base/product-service
   destination:
     server: https://kubernetes.default.svc
     namespace: default

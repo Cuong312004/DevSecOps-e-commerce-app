@@ -48,6 +48,7 @@ module "jenkins" {
   source              = "../../modules/jenkins"
   name                = "jenkins-staging-vm"
   admin_username      = var.admin_username
+  admin_password      = var.admin_password
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
   subnet_id           = module.network.subnet_id

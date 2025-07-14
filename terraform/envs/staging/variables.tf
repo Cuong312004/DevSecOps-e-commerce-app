@@ -12,6 +12,7 @@ variable "subscription_id" {
 }
 
 variable "admin_username" {}
+variable "admin_password" {}
 
 variable "public_key_path" {
   type = string

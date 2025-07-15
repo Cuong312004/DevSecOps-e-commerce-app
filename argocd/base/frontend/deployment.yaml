@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: stagingacr1234.azurecr.io/frontend:1
+          image: stagingacr1234.azurecr.io/frontend:2
           ports:
             - containerPort: 3000
 

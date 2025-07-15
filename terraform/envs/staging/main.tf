@@ -32,7 +32,7 @@ module "aks" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
   dns_prefix          = "staging-aks"
-  node_count          = 1
+  node_count          = 2
 }
 
 resource "null_resource" "get_kubeconfig" {

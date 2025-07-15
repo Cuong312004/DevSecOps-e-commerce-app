@@ -1,0 +1,15 @@
+grafana:
+  adminPassword: admin123
+  service:
+    type: LoadBalancer
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+
+# Optional: enable ingress
+# ingress:
+#   enabled: true
+#   annotations: {}
+#   hosts:
+#     - monitoring.example.com

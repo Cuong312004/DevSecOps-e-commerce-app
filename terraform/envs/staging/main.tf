@@ -32,7 +32,7 @@ module "aks" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
   dns_prefix          = "staging-aks"
-  node_count          = 1
+  node_count          = 2
 }
 
 resource "null_resource" "get_kubeconfig" {
@@ -87,3 +87,20 @@ module "nginx_ingress" {
   depends_on = [module.aks]
 }
 
+module "monitoring" {
+  source        = "../../modules/monitoring"
+  name          = "prometheus-stack"
+  namespace     = "monitoring"
+  chart_version = "56.5.0"
+
+  depends_on = [module.aks]
+}
+
+module "sonarqube" {
+  source    = "../../modules/sonarqube"
+  name      = "sonarqube"
+  namespace = "sonarqube"
+  chart_version = "10.4.1+2389"
+
+  depends_on = [module.aks, module.nginx_ingress]
+}

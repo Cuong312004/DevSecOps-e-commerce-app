@@ -1,0 +1,25 @@
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - name: sonarqube.local
+      path: /
+      pathType: Prefix
+
+persistence:
+  enabled: true
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "2Gi"
+  limits:
+    cpu: "1"
+    memory: "4Gi"
+
+# Optional: Disable PostgreSQL embedded if you use external DB
+postgresql:
+  enabled: true

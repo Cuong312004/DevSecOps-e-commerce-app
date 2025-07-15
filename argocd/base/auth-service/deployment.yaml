@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: stagingacr1234.azurecr.io/auth-service:8
+          image: stagingacr1234.azurecr.io/auth-service:1
           ports:
             - containerPort: 5000
-            
+

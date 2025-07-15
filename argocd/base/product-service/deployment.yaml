@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: product
-          image: stagingacr1234.azurecr.io/product-service:8
+          image: stagingacr1234.azurecr.io/product-service:1
           ports:
             - containerPort: 5000
 

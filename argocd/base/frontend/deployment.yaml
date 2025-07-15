@@ -17,3 +17,4 @@ spec:
           image: stagingacr1234.azurecr.io/frontend:1
           ports:
             - containerPort: 3000
+

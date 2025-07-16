@@ -96,11 +96,3 @@ module "monitoring" {
   depends_on = [module.aks]
 }
 
-module "sonarqube" {
-  source    = "../../modules/sonarqube"
-  name      = "sonarqube"
-  namespace = "sonarqube"
-  chart_version = "10.4.1+2389"
-
-  depends_on = [module.aks, module.nginx_ingress]
-}

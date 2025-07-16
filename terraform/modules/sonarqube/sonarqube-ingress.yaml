@@ -6,8 +6,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: nginx  
   rules:
-    - host: sonarqube.local    
+    - host: sonarqube.local
       http:
         paths:
           - path: /

@@ -16,6 +16,18 @@ resource "azurerm_network_security_group" "nsg" {
   name                = "${var.subnet_name}-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
+  
+  security_rule {
+    name                       = "AllowAny-Ping"
+    priority                   = 1000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Icmp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
   security_rule {
     name                       = "AllowAny-SSH"
     priority                   = 1001

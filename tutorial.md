@@ -8,7 +8,7 @@ Một hệ thống Microservices hoàn chỉnh, tích hợp CI/CD, GitOps, Monit
 - **Prometheus + Grafana (Monitoring)**
 - **SonarQube (Static Code Analysis)**
 - **IaC với Terraform + bảo mật Checkov**
-
+![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/1.png)
 ---
 
 ## 1️⃣ Triển khai hạ tầng với Terraform và Checkov
@@ -42,7 +42,7 @@ az aks update --name staging-aks --resource-group rg-staging --attach-acr stagin
 kubectl get pods -n argocd                  # Kiểm tra ArgoCD
 kubectl get svc -n ingress-nginx            # Kiểm tra Ingress Controller
 ```
-
+![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/2.png)
 ---
 
 ## 4️⃣ Deploy các ứng dụng microservice với ArgoCD
@@ -53,15 +53,20 @@ kubectl apply -f argocd/apps/product-service.yaml -n argocd
 kubectl apply -f argocd/apps/order-service.yaml -n argocd
 kubectl apply -f argocd/apps/frontend.yaml -n argocd
 ```
-
+![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/3.png)
 ---
 
 ## 5️⃣ Cấu hình SonarQube
 
 - Truy cập Azure > **Network Security Group**
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/4.png)
 - Cho phép port `9000` ở cả `jenkins-nsg` và `staging-subnet-nsg`
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/5.png)
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/6.png)
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/7.png)
 - Truy cập: `http://<SonarQube_Public_IP>:9000`
 - Đăng nhập: `admin / admin`
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/8.png)
 - Vào `My Account > Security` → Tạo và lưu lại token
 
 ---
@@ -71,22 +76,27 @@ kubectl apply -f argocd/apps/frontend.yaml -n argocd
 ### Truy cập Jenkins VM
 
 - Azure > Virtual Machines > `jenkins-staging-vm`
-- Enable `Serial Console` → Đăng nhập vào VM
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/9.png)
+- Kích hoạt Serial console 
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/10.png)
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/11.png)
+- Enable `Serial Console` → Đăng nhập vào VM 
 - Xem mật khẩu:
 ```bash
 sudo nano /var/lib/jenkins/secrets/initialAdminPassword
 ```
-
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/12.png)
 - Truy cập Jenkins: `http://<jenkins_public_ip>:8080`
 - Đăng nhập và setup:
   - Install suggested plugins
+    ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/13.png)
   - Tạo tài khoản đăng nhập
-
+    ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/14.png)
 ### Cài plugin
 
 - `Pipeline Utility Steps`
 - `SonarQube Scanner`
-
+  ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/15.png)
 ### Tạo Credential
 
 - `github_cre`: cho repo code

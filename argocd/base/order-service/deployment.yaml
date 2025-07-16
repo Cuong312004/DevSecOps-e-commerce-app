@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: order
-          image: stagingacr1234.azurecr.io/order-service:2
+          image: stagingacr1234.azurecr.io/order-service:1
           ports:
             - containerPort: 5000
 

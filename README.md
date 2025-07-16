@@ -23,6 +23,8 @@ A complete DevSecOps pipeline and microservices-based e-commerce web application
 
 ## 🚀 CI/CD Pipeline Overview
 
+![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/1.png)
+
 1. Developer pushes code to the `mini-e-commerce` repository
 2. Jenkins is triggered via webhook
 3. Code is analyzed by **SonarQube**
@@ -104,6 +106,7 @@ mini-e-commerce/
 - **Tool**: SonarQube
 - Enforced Quality Gates: bugs, vulnerabilities, smells
 
+![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/31.png)
 
 ### 🛡️ Infrastructure as Code Scanning
 
@@ -134,6 +137,7 @@ Jenkins builds image → updates GitOps manifest in this repo →
 Push to main branch → ArgoCD auto-syncs →
 Kubernetes rollout triggered
 ```
+![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/33.png)
 
 ---
 
@@ -146,6 +150,7 @@ Kubernetes rollout triggered
 | Loki (opt)   | Logging (can be added)                 |
 | Alertmanager | Alert rules (e.g., Slack/Email)        |
 
+![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/29.png)  
 ---
 
 ## 🧪 Local Dev & Docker

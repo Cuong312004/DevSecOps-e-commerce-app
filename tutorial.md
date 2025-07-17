@@ -1,25 +1,40 @@
-# 🧪 Tutorial: Triển khai hệ thống DevSecOps E-commerce Microservices trên Azure
+# 🧪 Tutorial: Deploy a DevSecOps E-commerce Microservices System on Azure
 
-Một hệ thống Microservices hoàn chỉnh, tích hợp CI/CD, GitOps, Monitoring và DevSecOps gồm các thành phần:
+A complete Microservices system with CI/CD, GitOps, Monitoring, and DevSecOps using:
 
 - **Kubernetes (AKS)**
 - **Jenkins CI + Docker + ACR**
 - **ArgoCD (GitOps)**
 - **Prometheus + Grafana (Monitoring)**
 - **SonarQube (Static Code Analysis)**
-- **IaC với Terraform + bảo mật Checkov**
+- **IaC using Terraform + Security with Checkov**
+
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/1.png)
+
 ---
 
-## 1️⃣ Triển khai hạ tầng với Terraform và Checkov
+## 🧾 Before You Begin: Create a `terraform.tfvars` file
+
+In the folder `terraform/envs/staging`, create a file `terraform.tfvars` with the following variables:
+
+```hcl
+location              = "Your Azure region"
+resource_group_name   = "Your resource group"
+subscription_id       = "Your Azure subscription ID"
+admin_username        = "jenkins-admin"            # Username for Jenkins VM
+admin_password        = "yourStrongPasswordHere!"  # Password for Jenkins VM
+public_key_path       = "~/.ssh/id_rsa.pub"        # SSH public key path created on Azure
+```
+
+## 1️⃣ Provision Infrastructure with Terraform and Checkov
 
 ```bash
 cd terraform/envs/staging
 
-# Quét bảo mật với Checkov
+# Run security scan with Checkov
 checkov -d .
 
-# Khởi tạo và áp dụng Terraform
+# Initialize and apply Terraform
 terraform init
 terraform plan
 terraform apply
@@ -27,7 +42,7 @@ terraform apply
 
 ---
 
-## 2️⃣ Kết nối tới cụm AKS & cấp quyền ACR
+## 2️⃣ Connect to AKS Cluster & Attach ACR
 
 ```bash
 az aks get-credentials --resource-group rg-staging --name staging-aks
@@ -36,7 +51,7 @@ az aks update --name staging-aks --resource-group rg-staging --attach-acr stagin
 
 ---
 
-## 3️⃣ Kiểm tra trạng thái các thành phần
+## 3️⃣ Check ArgoCD & Ingress Controller Status
 
 ```bash
 kubectl get pods -n argocd                  # Kiểm tra ArgoCD
@@ -45,7 +60,7 @@ kubectl get svc -n ingress-nginx            # Kiểm tra Ingress Controller
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/2.png)
 ---
 
-## 4️⃣ Deploy các ứng dụng microservice với ArgoCD
+## 4️⃣ Deploy Microservices with ArgoCD
 
 ```bash
 kubectl apply -f argocd/apps/auth-service.yaml -n argocd
@@ -56,59 +71,58 @@ kubectl apply -f argocd/apps/frontend.yaml -n argocd
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/3.png)
 ---
 
-## 5️⃣ Cấu hình SonarQube
+## 5️⃣ Configure SonarQube
 
-- Truy cập Azure > **Network Security Group**
+- Go to Azure > Network Security Groups
   
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/4.png)
 
-- Cho phép port `9000` ở cả `jenkins-nsg` và `staging-subnet-nsg`
+- Add inbound port `9000` for both `jenkins-nsg` and `staging-subnet-nsg`.
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/5.png)
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/6.png)
 
-- Truy cập: `http://<SonarQube_Public_IP>:9000`
-- Đăng nhập: `admin / admin`
+- Access `http://<SonarQube_Public_IP>:9000` 
+- Login: `admin / admin`
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/7.png)
 
-- Vào `My Account > Security` → Tạo và lưu lại token
+- Go to `My Account > Security` → generate and save a token
 
 ---
 
-## 6️⃣ Cấu hình Jenkins
+## 6️⃣ Configure Jenkins CI/CD
 
-### Truy cập Jenkins VM
+### Access Jenkins VM
 
 - Azure > Virtual Machines > `jenkins-staging-vm`
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/8.png)
 
-- Kích hoạt Serial console
+- Enable Serial Console access
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/9.png)
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/10.png)
 
-- Enable `Serial Console` → Đăng nhập vào VM 
-- Xem mật khẩu:
+- Login VM via serial console and retrieve initial password:
 ```bash
 sudo nano /var/lib/jenkins/secrets/initialAdminPassword
 ```
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/11.png)
 
-- Truy cập Jenkins: `http://<jenkins_public_ip>:8080`
-- Đăng nhập và setup:
+- Access Jenkins: `http://<jenkins_public_ip>:8080`
+- Login và setup:
   - Install suggested plugins
   
     ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/12.png)
   
-  - Tạo tài khoản đăng nhập
+  - Create admin account
   
     ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/13.png)
   
-### Cài plugin
+### Install Plugins
 
 - `Pipeline Utility Steps`
 - `SonarQube Scanner`
@@ -121,29 +135,28 @@ sudo nano /var/lib/jenkins/secrets/initialAdminPassword
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/15.png)
 
-- `acr_cre`: từ ACR → Access Keys → admin user
-- Tạo acr_cre: vào azure -> Container registries -> stagingacr1234 -> Access keys -> Chọn Admin user -> Lấy username password -> quay lại tạo credential jenkins
+- `acr_cre` → ACR Access Keys (enable Admin user in Azure) -> take username password -> comeback to create credential jenkins
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/16.png)
   
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/17.png)
 
-- `sonar_cre`: dùng token SonarQube
+- `sonar_cre`: use token SonarQube
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/18.png)
 
-### Kết nối SonarQube
+### Configure SonarQube Integration
 
 - Manage Jenkins > Configure System
 - Add SonarQube server
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/19.png)
 
-- Vào manage jenkins ->Tool -> Add SonarQube Scanner
+- Jenkins → Manage Jenkins → Global Tool Configuration → Add SonarQube Scanner
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/20.png)
 
-### Tạo Job Pipeline
+### Create Jenkins Job (Pipeline)
 
 - Triggers: GitHub webhook
 - Source: Git > repo code
@@ -153,53 +166,53 @@ sudo nano /var/lib/jenkins/secrets/initialAdminPassword
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/21.png)
 ---
 
-## 7️⃣ Cấu hình ArgoCD
+## 7️⃣ Configure ArgoCD
 
-### Lấy mật khẩu mặc định
+### Get ArgoCD Admin Password
 
 ```bash
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
--	Sau đó vào web https://www.base64decode.org/ , nhập mật khẩu và lấy đoạn giải mã của mật khẩu
+-	Access to web https://www.base64decode.org/ , add password and get decode password
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/22.png)
 
-### Port-forward giao diện ArgoCD
+### Port-forward ArgoCD UI
 
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
-→ Truy cập `https://localhost:8080`  
-→ Đăng nhập: `admin` + mật khẩu đã giải mã
+→ Access `https://localhost:8080`  
+→ Login: `admin` + decode password
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/23.png)
 
-### Kết nối GitOps Repo
+### Connect GitOps Repo
 
-- Vào Settings > Repositories
-- Add repo: nhập GitHub user/pass hoặc token
+- ArgoCD UI → Settings → Repositories
+- Add repo: Connect GitHub repo (via username/token)
 
   ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/24.png)
   
-- Kết nối thành công: `Successful`
+- Connect: `Successful`
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/25.png)
 
 ---
 
-## 8️⃣ Cấu hình Prometheus + Grafana
+## 8️⃣ Set Up Prometheus + Grafana
 
 ```bash
 kubectl port-forward -n monitoring svc/prometheus-stack-grafana 3000:80
 ```
 
-→ Truy cập: `http://localhost:3000`  
-→ Đăng nhập: `admin / admin123`
+→ Access: `http://localhost:3000`  
+→ Login: `admin / admin123`
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/26.png)
 
-- Dashboard > Playlists > Create
+- Navigate: Dashboard → Playlists → Create
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/27.png)
 
@@ -211,31 +224,31 @@ kubectl port-forward -n monitoring svc/prometheus-stack-grafana 3000:80
 
 ---
 
-## 9️⃣ Thực nghiệm toàn hệ thống
+## 9️⃣ Test the Full Pipeline
 
-- Thay đổi nhỏ trong Jenkinsfile → push lên GitHub
-- Jenkins bắt sự kiện → chạy pipeline:
+- Modify and push code (e.g., Jenkinsfile)
+- Jenkins triggers pipeline:
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/30.png)
 
-  - SonarQube scan → Dashboard hiển thị chất lượng code
+  - SonarQube scans code → result shown on dashboard
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/31.png)
 
-  - Build + push Docker image lên ACR
+  - Jenkins builds and pushes Docker image to ACR
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/32.png)
 
-- ArgoCD tự động phát hiện thay đổi image → Sync
+- ArgoCD syncs latest image to AKS
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/33.png)
 
-- Grafana hiển thị các chỉ số giám sát realtime
+- Grafana displays monitoring metrics
 
 ![System Architecture](https://github.com/Cuong312004/DevSecOps-e-commerce-app/blob/main/image/34.png)
 
 ---
 
-## ✅ Kết quả cuối cùng
+## ✅ Final Result
 
-✔️ Một hệ thống DevSecOps hoàn chỉnh, tự động từ khâu code → build → scan → deploy → monitoring trên Azure.
+✔️ A complete DevSecOps microservices pipeline running CI/CD, GitOps, monitoring, and security checks — fully automated on Azure.
